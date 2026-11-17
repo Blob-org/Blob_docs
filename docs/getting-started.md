@@ -29,19 +29,20 @@ done
 
 ## Run everything with Docker
 
-### 1. Create auth_service's signing key
+### 1. Create auth_service's keys
 
-auth_service signs access tokens with a private Ed25519 key, read from `AUTH_PRIVATE_KEY` in its `.env`. Its `compose.yaml` sets every other variable itself.
+auth_service signs access tokens with a private Ed25519 key, read from `AUTH_PRIVATE_KEY` in its `.env`, and encrypts two-factor secrets with `MFA_ENCRYPTION_KEY`. Its `compose.yaml` sets every other variable itself.
 
 ```bash
 cd auth_service
 bun install
 cp .env.example .env
-bun run gen-key >> .env   # appends AUTH_PRIVATE_KEY='{...}'
+bun run gen-key >> .env       # appends AUTH_PRIVATE_KEY='{...}'
+bun run gen-mfa-key >> .env   # appends MFA_ENCRYPTION_KEY=...
 cd ..
 ```
 
-Do this once. `.env` is ignored by git; keep the key out of commits and chat. The other stacks need no `.env`.
+Do this once. `.env` is ignored by git; keep the keys out of commits and chat. An older `.env` without `MFA_ENCRYPTION_KEY` needs just the second command: auth_service won't start without it. The other stacks need no `.env`.
 
 ### 2. Start the stacks in order
 
@@ -136,7 +137,7 @@ Use this when you're changing a service and want `--watch` reloads. Every repo h
 | Repo | Command | Listens on | Needs |
 | --- | --- | --- | --- |
 | S3Mock | `docker run` (below) | 9090 | Docker |
-| auth_service | `bun run dev` | 4000 | `.env` with `AUTH_PRIVATE_KEY` |
+| auth_service | `bun run dev` | 4000 | `.env` with `AUTH_PRIVATE_KEY` and `MFA_ENCRYPTION_KEY` |
 | Blob_storage | `bun run dev` | 3000 | `.env` with the `S3_*` variables |
 | Blob_api_gateway | `bun run dev` | 8080 | auth on 4000, blob on 3000 |
 | Blob_frontend | `bun run dev` | 5173 | gateway on 8080 |
@@ -158,6 +159,7 @@ cd auth_service
 bun install
 cp .env.example .env            # skip if you made it for Docker
 bun run gen-key >> .env         # skip if .env already has AUTH_PRIVATE_KEY
+bun run gen-mfa-key >> .env     # skip if .env already has MFA_ENCRYPTION_KEY
 ```
 
 Edit `.env` and set:

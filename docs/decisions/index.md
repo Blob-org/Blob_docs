@@ -52,3 +52,4 @@ Bad:
 | [0006](0006-json-logs-and-request-ids.md) | JSON log lines and `X-Request-Id` in every service | Accepted, 2026-10-24 |
 | [0007](0007-loki-instead-of-elk.md) | Loki and Grafana for logs instead of ELK | Accepted, 2026-10-30 |
 | [0008](0008-repo-per-service.md) | One Git repo per service | Accepted, 2026-10-05 |
+| [0009](0009-totp-mfa.md) | Optional TOTP multi-factor authentication with recovery codes | Accepted, 2026-11-17 |

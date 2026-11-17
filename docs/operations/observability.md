@@ -46,14 +46,15 @@ Loki keeps logs for 7 days (`retention_period: 168h`).
 
 ## The dashboard
 
-The **Blob storage system** dashboard has two variables at the top: **Service** (filters the time series and logs) and **Request id**. The four stat panels count events over the selected time range.
+The **Blob storage system** dashboard has two variables at the top: **Service** (filters the time series and logs) and **Request id**. The five stat panels count events over the selected time range.
 
 | Panel | What it counts | What to do when it's not what you expect |
 | --- | --- | --- |
 | **Gateway 502s** | Gateway `upstream request failed`: it couldn't connect to auth or blob. | Should be 0. A service or its stack is down, or not on the `blob-storage` network. Follow [Gateway returns 502](../runbooks/gateway-502.md). |
 | **Failed logins** | auth `login failed` (wrong password or unknown email). | A few are normal. A spike from one `clientIp` is password guessing: the 20/min login limit slows it down. Check the lines' `clientIp` and `reason`. |
 | **Refresh token reuse** | auth `refresh token reuse detected`. All that user's sessions were revoked. | Should be 0. Can mean a stolen cookie, or a client that refreshed twice in parallel. Follow [Refresh token reuse](../runbooks/refresh-token-reuse.md). |
-| **Rate limited** | Gateway `rate limited` and auth `login rate limited`. | A burst from one IP is a script or an attack. Many IPs at once can mean `TRUST_PROXY` is wrong and everyone shares the proxy's address. Register rejections (`register rejected`, `reason: rate_limited`) aren't counted here: query them separately. |
+| **Failed MFA codes** | auth `mfa failed`: a wrong or reused code, or a step-two token that expired or had too many wrong codes. | A few are normal (typos, a phone clock that's off). Many for one `userId` means a locked-out user or someone with their password guessing codes: see [MFA lockout](../runbooks/mfa-lockout.md). Group by `reason` to tell them apart. |
+| **Rate limited** | Gateway `rate limited`, auth `login rate limited` and `mfa rate limited`. | A burst from one IP is a script or an attack. Many IPs at once can mean `TRUST_PROXY` is wrong and everyone shares the proxy's address. Register rejections (`register rejected`, `reason: rate_limited`) aren't counted here: query them separately. |
 | **Requests per second** | Access lines (`message="request"`) per service. | A drop to zero for one service while others carry on means it stopped logging or stopped getting traffic. |
 | **Server errors (5xx) per second** | Access lines with `status >= 500`. | Gateway 502s show here as `gateway`. Blob 502s are S3 failures: see [S3 unreachable](../runbooks/s3-unreachable.md). Any 500 is a bug: find the `unhandled error` line. |
 | **Latency p95** | 95th percentile of `ms` on the access lines. | Blob uploads read the whole file and write it to S3, so blob is the slowest. If one service jumps, check its warnings and S3 or auth reachability. |
@@ -103,6 +104,13 @@ sum by (operation) (count_over_time({container="blob"} | json | message="storage
 # Failed logins per minute, and the IPs behind them
 sum(count_over_time({container="auth"} | json | message="login failed" [1m]))
 topk(5, sum by (clientIp) (count_over_time({container="auth"} | json | message="login failed" [15m])))
+
+# Failed MFA codes per reason, and the users behind them
+sum by (reason) (count_over_time({container="auth"} | json | message="mfa failed" [1h]))
+topk(5, sum by (userId) (count_over_time({container="auth"} | json | message="mfa failed" [1h])))
+
+# Recovery codes used (each one is a user without their phone)
+{container="auth"} | json | message="recovery code used"
 
 # Uploads rejected, per reason (too large, missing file, bad form)
 sum by (reason) (count_over_time({container="blob"} | json | message="upload rejected" [1h]))
