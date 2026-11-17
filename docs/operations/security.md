@@ -68,8 +68,12 @@ What the system already does to protect users and data, and what's still needed 
 | Item | Status | Where |
 | --- | --- | --- |
 | Lockfiles installed with `--frozen-lockfile`; base images pinned to a version | Done | Every `Dockerfile` and `ci.yml` |
-| Dependabot for npm, Docker and GitHub Actions | To do | No `.github/dependabot.yml` in any repo |
-| CodeQL code scanning | To do | No workflow yet |
-| gitleaks secret scanning in CI | To do | No workflow yet |
-| Trivy image scanning in CI | To do | No workflow yet |
+| Dependabot for Bun, Docker, pip, compose and GitHub Actions, skipping releases younger than 14 days | Done | `.github/dependabot.yml` in every repo |
+| CodeQL code scanning (TypeScript and the workflow files), on PRs, `main` and weekly | Done | `security.yml` in every repo. Findings: each repo's **Security → Code scanning**. |
+| gitleaks secret scanning of the whole git history | Done | `security.yml` in every repo |
+| `bun audit` fails on moderate or worse advisories | Done | `security.yml` in the four service repos. One dev-only advisory with no fix yet is ignored, with the reason given. |
+| Trivy scan of each Docker image fails on fixable HIGH or CRITICAL issues | Done | `security.yml` in the four service repos. Base images moved to `oven/bun:1.4.4-alpine`, and npm/yarn removed from the frontend's Node runtime. |
+| SBOM (CycloneDX) attached to every release | Done | `release.yml` in the four service repos |
+| Actions pinned to commit SHAs, scanner binaries pinned by hash | Done for `security.yml` and the release SBOM step | Older workflows still use version tags such as `actions/checkout@v4`. Dependabot keeps the pins current. |
+| Security checks required before merging | To do | Add `secrets`, `dependencies`, `codeql` and `image` to the branch protection rules once they've run green |
 | `main` protected; PRs need passing checks | Done | Branch protection. See [Contributing](../contributing.md). |
