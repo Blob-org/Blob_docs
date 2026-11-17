@@ -70,6 +70,7 @@ nav:
       - decisions/0006-json-logs-and-request-ids.md
       - decisions/0007-loki-instead-of-elk.md
       - decisions/0008-repo-per-service.md
+      - decisions/0009-totp-mfa.md
   - API:
       - Using the API: api/index.md
       - Auth API reference: api/auth.md
@@ -80,6 +81,7 @@ nav:
       - CORS error or signed out: runbooks/cors-or-signed-out.md
       - S3 unreachable: runbooks/s3-unreachable.md
       - Refresh token reuse: runbooks/refresh-token-reuse.md
+      - MFA lockout: runbooks/mfa-lockout.md
       - Upload rejected or cut off: runbooks/upload-too-large.md
       - Rotate the JWT key: runbooks/rotate-jwt-key.md
       - Rotate S3 keys: runbooks/rotate-s3-keys.md

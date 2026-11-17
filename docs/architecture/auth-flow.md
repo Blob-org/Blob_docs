@@ -1,6 +1,6 @@
 # Authentication
 
-auth_service issues two tokens. Blob_storage checks the access token itself, so auth_service isn't on the path of every request. This page shows the four flows that matter: login, refresh with rotation, reuse revocation and page reload.
+auth_service issues two tokens. Blob_storage checks the access token itself, so auth_service isn't on the path of every request. This page shows the flows that matter: login, login with MFA, refresh with rotation, reuse revocation and page reload.
 
 For why it works this way, see [ADR 0004](../decisions/0004-jwt-with-rotating-refresh-tokens.md). For endpoint details, see the [Auth API reference](../api/auth.md).
 
@@ -15,7 +15,7 @@ For why it works this way, see [ADR 0004](../decisions/0004-jwt-with-rotating-re
 | Sent as | `Authorization: Bearer <token>` | The cookie, sent by the browser automatically |
 | Checked by | Every service, locally, against the public key | auth_service only |
 
-Access token claims: `sub` (user id), `iss` (`AUTH_ISSUER`), `aud` (`AUTH_AUDIENCE`, a list: `blob_storage,todos_service` by default), `iat`, `exp`.
+Access token claims: `sub` (user id), `iss` (`AUTH_ISSUER`), `aud` (`AUTH_AUDIENCE`, a list: `blob_storage,todos_service` by default), `iat`, `exp`, and `amr`: how the user signed in, `["pwd"]` or `["pwd", "otp"]` after a second factor.
 
 JavaScript can't read the refresh cookie, and the access token is never written to `localStorage`, so a script injected into the page can't steal a long-lived credential.
 
@@ -48,6 +48,51 @@ sequenceDiagram
 ```
 
 Signing up is `POST /api/auth/register` followed by the same login. The app does both in one step.
+
+## Login with MFA
+
+Users can turn on two-factor authentication with an authenticator app ([ADR 0009](../decisions/0009-totp-mfa.md)). For them, the password step starts no session. It returns a short-lived `mfaToken` instead, and a second request exchanges it plus a code for the normal tokens.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant B as Browser (lib/api.ts)
+    participant P as Blob_frontend + gateway
+    participant A as auth_service
+    participant DB as SQLite
+
+    B->>P: POST /api/auth/login { email, password }
+    P->>A: POST /login
+    Note over A: Password checked as above.<br/>totp_enabled_at is set
+    A-->>B: 200 { mfaRequired: true, mfaToken }<br/>no cookie
+    Note over B: Show the code step
+    B->>P: POST /api/auth/login/mfa { mfaToken, code }
+    P->>A: POST /login/mfa
+    Note over A: mfaToken: signature, aud "mfa", not expired (5 min),<br/>fewer than 5 wrong codes, not used yet
+    alt 6-digit code
+        A->>DB: decrypt totp_secret (AES-GCM, MFA_ENCRYPTION_KEY)
+        Note over A: Code matches the previous, current or next 30 s step
+        A->>DB: totp_last_step = step, only if it is newer (no replay)
+    else recovery code
+        A->>DB: mark the code with this HMAC as used, only if unused
+    end
+    alt wrong or already used
+        A-->>B: 401 { error: "Invalid code" }
+    else mfaToken expired, used up or 5 wrong codes
+        A-->>B: 401 { error, restart: true }
+        Note over B: Back to the password step
+    else ok
+        A->>DB: insert sha256(refresh token), mfa = 1
+        A-->>B: 200 { accessToken (amr: pwd, otp) }<br/>Set-Cookie: refresh_token
+    end
+```
+
+Notes:
+
+- The `mfaToken` is signed with the same key as access tokens, but its audience is `mfa`. Every service, auth_service's own `/me` included, checks for its own audience, so it rejects the `mfaToken`.
+- Refreshing keeps the session's `amr`: the refresh token row records whether the session was opened with a second factor.
+- Setup is two calls: `POST /mfa/setup` returns a secret and an `otpauth://` link (shown as a QR code), and `POST /mfa/enable` turns MFA on after one correct code and returns 10 recovery codes, once. Turning it off needs the password and a code.
+- A user who lost both the app and the recovery codes is reset by an admin: [MFA lockout](../runbooks/mfa-lockout.md).
 
 ## How Blob_storage checks an access token
 
@@ -181,3 +226,7 @@ Because the reload path also goes through the shared refresh promise, it is safe
 | Private key | `AUTH_PRIVATE_KEY` in auth_service's `.env`, a JSON private JWK with a `kid`. Generate it with `bun run gen-key >> .env`. |
 | Public key | `GET /.well-known/jwks.json` on auth_service, cached by clients (`Cache-Control: public, max-age=300`). |
 | Rotation | Only one key at a time today. See [Rotate the JWT key](../runbooks/rotate-jwt-key.md). |
+
+## MFA key
+
+`MFA_ENCRYPTION_KEY` (32 random bytes, base64url) encrypts the stored TOTP secrets and keys the recovery-code hashes. Generate it with `bun run gen-mfa-key >> .env`; auth_service won't start without it. It's as sensitive as the signing key, and losing it locks out every MFA user: see [MFA lockout](../runbooks/mfa-lockout.md#if-mfa_encryption_key-was-lost).

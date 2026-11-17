@@ -33,5 +33,6 @@ Each runbook also has a tip pointing at the Grafana panel or LogQL query that sh
 | [Upload rejected or cut off](upload-too-large.md) | Uploads fail with 413, or stored files are smaller than the original |
 | [S3 unreachable](s3-unreachable.md) | Blob calls fail with `502 {"error":"Storage unavailable"}` |
 | [Refresh token reuse alert](refresh-token-reuse.md) | auth logs `refresh token reuse detected`, or a user was signed out everywhere |
+| [MFA lockout](mfa-lockout.md) | A user lost their authenticator app and recovery codes, or every MFA user suddenly fails the code step |
 | [Rotate the JWT signing key](rotate-jwt-key.md) | Scheduled rotation, or the signing key may have leaked |
 | [Rotate S3 access keys](rotate-s3-keys.md) | Scheduled rotation, or an S3 access key may have leaked |

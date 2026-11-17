@@ -14,9 +14,14 @@ What the system already does to protect users and data, and what's still needed 
 | Refresh tokens stored only as SHA-256 hashes | Done | auth_service `src/routes.ts`, `src/db.ts` |
 | Refresh token rotated on every `/refresh`; reusing an old one revokes all the user's sessions | Done | auth_service `src/routes.ts`. [Runbook](../runbooks/refresh-token-reuse.md). |
 | Browser calls the API on its own origin, so no cross-site cookies or CORS | Done | Blob_frontend `next.config.ts`. [ADR 0001](../decisions/0001-same-origin-api-proxy.md). |
+| Optional two-factor authentication (TOTP) with one-time recovery codes; access tokens say how the user signed in (`amr`) | Done | auth_service `src/mfa.ts`, `src/routes.ts`. [ADR 0009](../decisions/0009-totp-mfa.md). |
+| TOTP secrets encrypted (AES-256-GCM) and recovery codes stored as HMAC-SHA-256, keyed from `MFA_ENCRYPTION_KEY` | Done | auth_service `src/mfa.ts` |
+| Each TOTP and recovery code works once; the step between password and code expires in 5 minutes and allows 5 wrong codes | Done | auth_service `src/routes.ts`, `src/db.ts` |
+| Every service checks the token audience, so the step-two `mfaToken` isn't accepted as an access token | Done | auth_service `src/routes.ts` (`authenticate`), Blob_storage `src/auth.ts` |
+| MFA required for everyone, or for sensitive actions (services checking `amr`) | To do | Optional per user today |
 | Tokens carry a `kid`, and the JWKS endpoint publishes the public key with it | Done | auth_service `src/keys.ts`, `/.well-known/jwks.json` |
 | Key rotation: JWKS serves only one key, so access tokens signed with the old key fail (`401`) until the client refreshes | To do | auth_service `src/keys.ts`, `src/routes.ts`. [Runbook](../runbooks/rotate-jwt-key.md). |
-| JWT private key in AWS Secrets Manager or SSM Parameter Store, not a `.env` file | To do | auth_service `AUTH_PRIVATE_KEY` |
+| JWT private key and MFA key in AWS Secrets Manager or SSM Parameter Store, not a `.env` file, with a backup of the MFA key | To do | auth_service `AUTH_PRIVATE_KEY`, `MFA_ENCRYPTION_KEY` |
 | `COOKIE_SECURE=true` in every deployed environment (needs TLS) | To do | auth_service compose / deployment config |
 
 ## Abuse and exposure
@@ -24,7 +29,7 @@ What the system already does to protect users and data, and what's still needed 
 | Item | Status | Where |
 | --- | --- | --- |
 | Per-IP rate limit at the gateway (`RATE_LIMIT`, 300/min) | Done | Blob_api_gateway `src/rateLimit.ts`, `src/proxy.ts` |
-| Register and login limited to 20/min per IP | Done | auth_service `src/rateLimit.ts`, `src/routes.ts` |
+| Register, login, the MFA code step and MFA enable/disable limited to 20/min per IP | Done | auth_service `src/rateLimit.ts`, `src/routes.ts` |
 | Rate limits shared between instances (Redis) if a service is scaled out | To do | Both `src/rateLimit.ts` files are in memory |
 | Client IP taken from `X-Forwarded-For` only with `TRUST_PROXY=true` | Done | Blob_api_gateway `src/proxy.ts`, auth_service `src/routes.ts`. [ADR 0005](../decisions/0005-trust-proxy.md). |
 | TLS in front: a reverse proxy or load balancer terminating HTTPS for Blob_frontend | To do | Deployment |
