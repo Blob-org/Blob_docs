@@ -44,6 +44,8 @@ mkdocs serve                   # http://127.0.0.1:8000, reloads on save
 
 CI runs both on every push. `pages.yml` publishes the site on every push to `main` and weekly, so the API reference picks up specs merged in the service repos.
 
+**Security** (`.github/workflows/security.yml`, on every PR, on push to `main` and weekly): gitleaks checks the whole git history for secrets, and CodeQL analyses the scripts and the workflow files. Findings appear under the repo's **Security → Code scanning**. Dependabot (`.github/dependabot.yml`) opens weekly update PRs for `requirements.txt` and the GitHub Actions. It skips releases younger than 14 days.
+
 ## PR rules
 
 Same as the service repos: branches are named `<feat|fix|docs|chore>/<issue number>-short-slug`, and a PR needs a type label (`feature`, `enhancement`, `bug`, `documentation`) and a reference to an open issue. With Claude Code, "ship this" uses the `ship-pr` skill in `.claude/skills/`.
