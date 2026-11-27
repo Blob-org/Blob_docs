@@ -38,9 +38,9 @@ The branch-name pattern:
 
 | Repo | CI job | What it runs |
 | --- | --- | --- |
-| auth_service, Blob_api_gateway | **Lint, typecheck, test** | `bunx biome ci .`, `bun run typecheck`, `bun test` |
+| Blob_auth, Blob_api_gateway | **Lint, typecheck, test** | `bunx biome ci .`, `bun run typecheck`, `bun test` |
 | Blob_frontend | **Lint, typecheck, test** | The same, plus `bun run build` |
-| Blob_storage | **Lint, typecheck, test** | The same as auth_service. Runs on PRs and pushes to `main` only. |
+| Blob_storage | **Lint, typecheck, test** | The same as Blob_auth. Runs on PRs and pushes to `main` only. |
 | Blob_observability | **Validate, smoke test** | `scripts/validate.sh`, then `scripts/smoke.sh --down` (starts the stack and checks a log line reaches Loki) |
 | Blob_docs | **Build** | `./scripts/fetch-openapi.sh`, `mkdocs build --strict`, markdownlint |
 
@@ -49,7 +49,7 @@ The branch-name pattern:
 
 ### Local hooks
 
-The four Bun repos (auth_service, Blob_storage, Blob_api_gateway, Blob_frontend) use Husky. On commit, `lint-staged` runs Biome on the staged files. On push, the hook runs `bun run typecheck && bun test`, and, except in Blob_storage, rejects a badly named branch first. Don't skip them with `--no-verify`: CI runs the same checks. Blob_observability and Blob_docs have no hooks: run their checks yourself before pushing.
+The four Bun repos (Blob_auth, Blob_storage, Blob_api_gateway, Blob_frontend) use Husky. On commit, `lint-staged` runs Biome on the staged files. On push, the hook runs `bun run typecheck && bun test`, and, except in Blob_storage, rejects a badly named branch first. Don't skip them with `--no-verify`: CI runs the same checks. Blob_observability and Blob_docs have no hooks: run their checks yourself before pushing.
 
 ```bash
 bun run lint:fix && bun run typecheck && bun test        # Bun repos
@@ -72,7 +72,7 @@ It follows the same rules as this page, so the PR passes on the first try.
 
 ## Adding a service
 
-A new service has to fit into four things: the log contract, the compose setup, the gateway, and the log stack. Use Blob_storage or auth_service as the template.
+A new service has to fit into four things: the log contract, the compose setup, the gateway, and the log stack. Use Blob_storage or Blob_auth as the template.
 
 ### 1. Follow the log contract
 

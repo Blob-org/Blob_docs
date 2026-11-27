@@ -35,9 +35,9 @@ So one upload through the gateway writes two `request` lines with the same `requ
 
 The other messages (`login failed`, `refresh token reuse detected`, `upload rejected`, `storage request failed`, …) are listed in each repo's README:
 
-- [auth_service logging](https://github.com/rades12340/auth_service#logging)
-- [Blob_storage logging](https://github.com/rades12340/Blob_storage#logging)
-- [Blob_api_gateway logging](https://github.com/rades12340/Blob_api_gateway#logging)
+- [auth_service logging](https://github.com/Blob-org/Blob_auth#logging)
+- [Blob_storage logging](https://github.com/Blob-org/Blob_storage#logging)
+- [Blob_api_gateway logging](https://github.com/Blob-org/Blob_api_gateway#logging)
 
 ### Levels and `LOG_LEVEL`
 
@@ -137,7 +137,7 @@ Find one request across services in Grafana's Explore:
 {project=~".+"} | requestId="3f2c…"
 ```
 
-More queries, the dashboard panels and troubleshooting are in [Observability](../operations/observability.md) and [Blob_observability's README](https://github.com/rades12340/Blob_observability#readme). Why Loki and not ELK: see [ADR 0007](../decisions/0007-loki-instead-of-elk.md).
+More queries, the dashboard panels and troubleshooting are in [Observability](../operations/observability.md) and [Blob_observability's README](https://github.com/Blob-org/Blob_observability#readme). Why Loki and not ELK: see [ADR 0007](../decisions/0007-loki-instead-of-elk.md).
 
 Without Docker, each service prints its JSON lines to the terminal. Filter them with `jq`, skipping any line that isn't JSON:
 

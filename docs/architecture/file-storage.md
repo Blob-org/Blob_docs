@@ -84,7 +84,7 @@ So Blob_storage uses two S3 clients: one for reads and writes (`S3_ENDPOINT`), a
 | Data survives a restart | No, only while the container runs | Yes |
 | Checks signatures and expiry | No: an expired link still works | Yes |
 
-The IAM policy only needs `s3:PutObject` and `s3:GetObject` on `files/*` and `s3:ListBucket` limited to the `files/` prefix. The exact policy and console steps are in [Blob_storage's README](https://github.com/rades12340/Blob_storage#s3-setup). Running it for real is covered in [Running on AWS](../operations/aws.md), and key rotation in [Rotate S3 keys](../runbooks/rotate-s3-keys.md).
+The IAM policy only needs `s3:PutObject` and `s3:GetObject` on `files/*` and `s3:ListBucket` limited to the `files/` prefix. The exact policy and console steps are in [Blob_storage's README](https://github.com/Blob-org/Blob_storage#s3-setup). Running it for real is covered in [Running on AWS](../operations/aws.md), and key rotation in [Rotate S3 keys](../runbooks/rotate-s3-keys.md).
 
 ## Settings
 

@@ -38,7 +38,7 @@ Use this runbook when:
 3. You need Bun on your machine to generate the key (the script isn't in the image):
 
     ```bash
-    cd auth_service && bun install
+    cd Blob_auth && bun install
     ```
 
 ## Fix
