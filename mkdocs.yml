@@ -1,8 +1,8 @@
 site_name: Blob storage system
 site_description: How the Blob storage services fit together, why they were built this way, and what to do when something breaks.
-site_url: https://rades12340.github.io/blob_docs/
-repo_url: https://github.com/rades12340/blob_docs
-repo_name: rades12340/blob_docs
+site_url: https://blob-org.github.io/blob_docs/
+repo_url: https://github.com/Blob-org/blob_docs
+repo_name: Blob-org/blob_docs
 edit_uri: edit/main/docs/
 strict: true
 

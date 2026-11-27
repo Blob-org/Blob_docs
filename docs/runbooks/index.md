@@ -11,7 +11,7 @@ Each runbook also has a tip pointing at the Grafana panel or LogQL query that sh
 
 ## Before you start
 
-- The commands assume the repos are cloned side by side (`auth_service/`, `Blob_storage/`, `Blob_api_gateway/`, `Blob_frontend/`, `Blob_observability/`) and that you run them from the parent folder unless a step says `cd`.
+- The commands assume the repos are cloned side by side (`Blob_auth/`, `Blob_storage/`, `Blob_api_gateway/`, `Blob_frontend/`, `Blob_observability/`) and that you run them from the parent folder unless a step says `cd`.
 - Compose project names and default container names:
 
     | Repo | Project | Service | Container | Port |

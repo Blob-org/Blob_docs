@@ -59,7 +59,7 @@ The current frontend never calls the gateway from the browser. It calls `/api/*`
 
     Then have the user hard-reload (Ctrl+Shift+R, or Cmd+Shift+R on a Mac) so the browser drops the cached page and scripts.
 
-- **Cookie has `Secure` on http**: set `COOKIE_SECURE=false` for auth_service in local development, then `cd auth_service && docker compose up -d`.
+- **Cookie has `Secure` on http**: set `COOKIE_SECURE=false` for auth_service in local development, then `cd Blob_auth && docker compose up -d`.
 
 Don't fix a CORS error by adding origins to `CORS_ORIGIN` in the gateway. The `SameSite=Strict` refresh cookie still isn't sent cross-site, so users stay signed out.
 

@@ -60,7 +60,7 @@ What each hop is responsible for:
 | Blob_storage | Verifies the token, enforces the size limit, writes to S3, scopes everything to the token's user. | Trust any user id from the client. The owner always comes from the token's `sub`. |
 | auth_service | Serves the public key. Blob_storage caches it, so auth_service isn't called on every request. | Take part in the upload otherwise. |
 
-The gateway's routing and headers are in its [README](https://github.com/rades12340/Blob_api_gateway#what-it-does-with-a-request). Token checks are in [Authentication](auth-flow.md), and the S3 objects in [File storage](file-storage.md).
+The gateway's routing and headers are in its [README](https://github.com/Blob-org/Blob_api_gateway#what-it-does-with-a-request). Token checks are in [Authentication](auth-flow.md), and the S3 objects in [File storage](file-storage.md).
 
 ## Body size limits
 

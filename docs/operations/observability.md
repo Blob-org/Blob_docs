@@ -1,6 +1,6 @@
 # Observability
 
-[Blob_observability](https://github.com/rades12340/Blob_observability) is a local log stack: Grafana Alloy reads the services' container logs from Docker, Loki stores them, and Grafana shows them on a ready-made dashboard. The services don't change: they write one JSON line per event to stdout (see [Logging and request ids](../architecture/logging.md)). Why Loki: [ADR 0007](../decisions/0007-loki-instead-of-elk.md).
+[Blob_observability](https://github.com/Blob-org/Blob_observability) is a local log stack: Grafana Alloy reads the services' container logs from Docker, Loki stores them, and Grafana shows them on a ready-made dashboard. The services don't change: they write one JSON line per event to stdout (see [Logging and request ids](../architecture/logging.md)). Why Loki: [ADR 0007](../decisions/0007-loki-instead-of-elk.md).
 
 ```mermaid
 flowchart LR
@@ -15,7 +15,7 @@ flowchart LR
 The stack joins the shared `blob-storage` network, which auth_service's stack creates. Start it before or after the other stacks: Alloy picks containers up as they come and go.
 
 ```bash
-git clone https://github.com/rades12340/Blob_observability
+git clone https://github.com/Blob-org/Blob_observability
 cd Blob_observability
 docker network create blob-storage 2>/dev/null || true   # only if auth_service isn't up yet
 docker compose up -d

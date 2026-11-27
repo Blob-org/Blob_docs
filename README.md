@@ -1,14 +1,14 @@
 # Blob_docs
 
-Documentation for the whole Blob storage system: how the services fit together, why they were built this way, and what to do when something breaks. Published at **https://rades12340.github.io/blob_docs/**.
+Documentation for the whole Blob storage system: how the services fit together, why they were built this way, and what to do when something breaks. Published at **https://blob-org.github.io/blob_docs/**.
 
 | Repo | What it is |
 | --- | --- |
-| [auth_service](https://github.com/rades12340/auth_service) | Sign-up, login, JWT access tokens, refresh cookies |
-| [Blob_storage](https://github.com/rades12340/Blob_storage) | Upload, list and download files in S3 |
-| [Blob_api_gateway](https://github.com/rades12340/Blob_api_gateway) | Single entry point: routing, rate limits, request ids |
-| [Blob_frontend](https://github.com/rades12340/Blob_frontend) | Next.js web app |
-| [Blob_observability](https://github.com/rades12340/Blob_observability) | Loki + Grafana log stack for local development |
+| [Blob_auth](https://github.com/Blob-org/Blob_auth) | Sign-up, login, JWT access tokens, refresh cookies |
+| [Blob_storage](https://github.com/Blob-org/Blob_storage) | Upload, list and download files in S3 |
+| [Blob_api_gateway](https://github.com/Blob-org/Blob_api_gateway) | Single entry point: routing, rate limits, request ids |
+| [Blob_frontend](https://github.com/Blob-org/Blob_frontend) | Next.js web app |
+| [Blob_observability](https://github.com/Blob-org/Blob_observability) | Loki + Grafana log stack for local development |
 
 ## What goes where
 

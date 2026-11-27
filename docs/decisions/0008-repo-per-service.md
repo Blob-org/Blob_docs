@@ -10,7 +10,7 @@ The system has four services and an observability stack, each with its own langu
 
 ## Decision
 
-Each service has its own repo: auth_service, Blob_storage, Blob_api_gateway, Blob_frontend and Blob_observability. Each has its own CI, PR checks and releases. This docs repo ties them together.
+Each service has its own repo: Blob_auth, Blob_storage, Blob_api_gateway, Blob_frontend and Blob_observability. Each has its own CI, PR checks and releases. This docs repo ties them together.
 
 ## Consequences
 

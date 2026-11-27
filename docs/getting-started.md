@@ -22,8 +22,8 @@ Put all five repos side by side in one folder. The compose files and READMEs ass
 
 ```bash
 mkdir blob && cd blob
-for repo in auth_service Blob_storage Blob_api_gateway Blob_frontend Blob_observability; do
-  git clone https://github.com/rades12340/$repo.git
+for repo in Blob_auth Blob_storage Blob_api_gateway Blob_frontend Blob_observability; do
+  git clone https://github.com/Blob-org/$repo.git
 done
 ```
 
@@ -34,7 +34,7 @@ done
 auth_service signs access tokens with a private Ed25519 key, read from `AUTH_PRIVATE_KEY` in its `.env`, and encrypts two-factor secrets with `MFA_ENCRYPTION_KEY`. Its `compose.yaml` sets every other variable itself.
 
 ```bash
-cd auth_service
+cd Blob_auth
 bun install
 cp .env.example .env
 bun run gen-key >> .env       # appends AUTH_PRIVATE_KEY='{...}'
@@ -49,7 +49,7 @@ Do this once. `.env` is ignored by git; keep the keys out of commits and chat. A
 auth_service's stack creates the shared Docker network `blob-storage`. Every other stack joins it as an external network and reaches the others by service name (`auth`, `blob`, `gateway`). So start auth_service first:
 
 ```bash
-(cd auth_service       && docker compose up -d --build)   # :4000, creates the blob-storage network
+(cd Blob_auth          && docker compose up -d --build)   # :4000, creates the blob-storage network
 (cd Blob_storage       && docker compose up -d --build)   # :3000, plus S3Mock on :9090
 (cd Blob_api_gateway   && docker compose up -d --build)   # :8080
 (cd Blob_frontend      && docker compose up -d --build)   # :5173
@@ -155,7 +155,7 @@ docker run --rm -p 9090:9090 -e COM_ADOBE_TESTING_S3MOCK_STORE_INITIAL_BUCKETS=b
 ### 2. auth_service
 
 ```bash
-cd auth_service
+cd Blob_auth
 bun install
 cp .env.example .env            # skip if you made it for Docker
 bun run gen-key >> .env         # skip if .env already has AUTH_PRIVATE_KEY

@@ -48,11 +48,11 @@ The main points:
 
 | Repo | Purpose | Port(s) | README |
 | --- | --- | --- | --- |
-| Blob_frontend | Next.js web app: sign up, sign in, upload, list, download. Forwards `/api/*` to the gateway. | 5173 | [README](https://github.com/rades12340/Blob_frontend#readme) |
-| Blob_api_gateway | Single entry point for the API. Routes `/api/auth/*` and `/api/blob/*`, rate limits, request ids. | 8080 | [README](https://github.com/rades12340/Blob_api_gateway#readme) |
-| auth_service | Sign-up, login, JWT access tokens, rotating refresh cookies, JWKS. Stores users in SQLite. | 4000 | [README](https://github.com/rades12340/auth_service#readme) |
-| Blob_storage | Upload, list and download files in S3. Verifies access tokens. | 3000 (S3Mock: 9090) | [README](https://github.com/rades12340/Blob_storage#readme) |
-| Blob_observability | Local log stack: Grafana Alloy, Loki and Grafana with a ready-made dashboard. | 3001 (Grafana), 3100 (Loki), 12345 (Alloy) | [README](https://github.com/rades12340/Blob_observability#readme) |
+| Blob_frontend | Next.js web app: sign up, sign in, upload, list, download. Forwards `/api/*` to the gateway. | 5173 | [README](https://github.com/Blob-org/Blob_frontend#readme) |
+| Blob_api_gateway | Single entry point for the API. Routes `/api/auth/*` and `/api/blob/*`, rate limits, request ids. | 8080 | [README](https://github.com/Blob-org/Blob_api_gateway#readme) |
+| auth_service | Sign-up, login, JWT access tokens, rotating refresh cookies, JWKS. Stores users in SQLite. | 4000 | [README](https://github.com/Blob-org/Blob_auth#readme) |
+| Blob_storage | Upload, list and download files in S3. Verifies access tokens. | 3000 (S3Mock: 9090) | [README](https://github.com/Blob-org/Blob_storage#readme) |
+| Blob_observability | Local log stack: Grafana Alloy, Loki and Grafana with a ready-made dashboard. | 3001 (Grafana), 3100 (Loki), 12345 (Alloy) | [README](https://github.com/Blob-org/Blob_observability#readme) |
 
 Loki and Alloy bind to `127.0.0.1` only. All other ports are published on every interface.
 

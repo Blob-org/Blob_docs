@@ -76,7 +76,7 @@ Two look-alikes that are **not** this runbook:
 - **A stack isn't running**: start it, in order.
 
     ```bash
-    (cd auth_service && docker compose up -d --build)
+    (cd Blob_auth && docker compose up -d --build)
     (cd Blob_storage && docker compose up -d --build)
     (cd Blob_api_gateway && docker compose up -d --build)
     ```

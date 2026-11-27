@@ -10,10 +10,10 @@ mkdir -p "$out"
 
 fetch() {
     local name=$1 repo=$2
-    curl -fsSL "https://raw.githubusercontent.com/rades12340/$repo/main/openapi.yaml" -o "$out/$name.yaml"
+    curl -fsSL "https://raw.githubusercontent.com/Blob-org/$repo/main/openapi.yaml" -o "$out/$name.yaml"
     grep -q '^openapi:' "$out/$name.yaml" || { echo "$repo/openapi.yaml doesn't look like an OpenAPI spec" >&2; exit 1; }
     echo "$out/$name.yaml <- $repo"
 }
 
-fetch auth auth_service
+fetch auth Blob_auth
 fetch blob Blob_storage

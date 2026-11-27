@@ -42,7 +42,7 @@ Run the reset with the account's email. It turns MFA off, deletes the TOTP secre
 # Docker
 docker compose -p auth-service exec auth bun run reset-mfa user@example.com
 
-# Local (from auth_service/, uses DB_PATH or ./auth.sqlite)
+# Local (from Blob_auth/, uses DB_PATH or ./auth.sqlite)
 bun run reset-mfa user@example.com
 ```
 
